@@ -19,11 +19,8 @@ def batch(iterable, size=1):
 
 def insert_rows_batch(table, rows, batch_size=500, target_fields=None):
     """
-    NOTE: Handle data type for columns yourself if using this method.
-    Otherwise look at insert_rows()
-
-    A utility method to insert batch of set of tuples into a table,
-    a new transaction is created after every batch size
+    A utility method to insert batch of tuples(rows) into a table
+    NOTE: Handle data type for fields in rows yourself as per your table columns' type.
 
     :param table: Name of the target table
     :type table: str
