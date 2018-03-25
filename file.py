@@ -1,11 +1,15 @@
 import psycopg2
 from configparser import RawConfigParser
 
+# to read from config file
 config = RawConfigParser()
-config.read('config.properties')
+config.read('config.properties') # give path to config file
 
 
 def get_conn():
+    """
+    Reads from config file for the database details and returns a connection object.
+    """
     if not hasattr(get_conn, 'db_details'):
         get_conn.db_details = dict(config.items('DB'))
     conn = psycopg2.connect(**get_conn.db_details)
@@ -13,6 +17,9 @@ def get_conn():
 
 
 def batch(iterable, size=1):
+    """
+    Yields batches of given size (default size=1) from the given iterable.
+    """
     for i in range(0, len(iterable), size):
         yield iterable[i: i + size]
 
