@@ -2,4 +2,4 @@
 
 Python utilities for postgres database.
 
-Currently includes: Batch insert and UPSERT (Insert + Update)
+Currently includes: Batch insert and batch UPSERT (Insert + Update)
