@@ -73,7 +73,7 @@ def upsert(table, pk_fields, all_fields, rows, pk_name=None, schema=None, target
     :param pk_name: The name of the table primary key. Don't pass it if primary key name has not been set manually,
                     in that case will use the default primary key name as TABLE-NAME_pkey
     :param schema: The schema used for the table.
-    :param target_fields: A list of all coulmn names (Optional).
+    :param target_fields: A list of all column names (Optional).
     :param batch_size: The size of the batch to perform upsert upon, default 100
     :return: None
     """
@@ -104,11 +104,16 @@ def upsert(table, pk_fields, all_fields, rows, pk_name=None, schema=None, target
     conn = get_conn()
     cur = conn.cursor()
     count = 0
+    last_batch_size = len(rows) % batch_size
+
+    sql = insert_sql.format(','.join(["%s"] * batch_size))
+    last_sql = insert_sql.format(','.join(["%s"] * last_batch_size))
 
     for mini_batch in batch(iterable=rows, size=batch_size):
         mini_batch_size = len(mini_batch)
-        record_template = ','.join(["%s"] * mini_batch_size)
-        cur.execute(insert_sql.format(record_template), mini_batch)
+        if mini_batch_size == last_batch_size:
+            sql = last_sql
+        cur.execute(sql, mini_batch)
         conn.commit()
         count += mini_batch_size
         print("Commit done on {} row(s) for UPSERT so far.".format(count))
